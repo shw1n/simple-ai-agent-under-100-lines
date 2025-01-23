@@ -37,16 +37,26 @@ class Agent:
             Steps taken: {', '.join(steps) if steps else 'None'}
             
             If you have enough information to answer the query, respond with: DONE: [final answer]
-            Otherwise, respond with the name of the next tool to use (just the tool name)."""
+            Otherwise, respond with the name of the next tool to use (just the tool name).
+
+            If you have no information to answer the query, and neither of the tools can help, respond with: DONE: [final answer]
+
+            If you find yoursef looping, respond with: DONE: [final answer]
+            
+            """
+
+            #print(f"prompt: {prompt}")
 
             response = self.client.messages.create(
-                model="claude-3-sonnet-20240229",
+                model="claude-3-5-haiku-20241022",
                 max_tokens=100,
                 temperature=0,
                 messages=[{"role": "user", "content": prompt}]
             )
             
             answer = response.content[0].text.strip()
+
+            #print(answer)
             
             if answer.startswith("DONE:"):
                 return answer[5:].strip()  # Return everything after "DONE:"
@@ -56,8 +66,8 @@ class Agent:
             for tool in self.tools:
                 if tool.name.lower() == tool_name:
                     tool_result = tool.func(query)
-                    steps.append(f"Used {tool.name}")
-                    result += f"\n{tool_result}"
+                    steps.append(f"Used {tool.name} (Step {len(steps)+1})")
+                    result += f"\nStep {len(steps)}: {tool_result}"
                     break
 
 # Simulate tools (not actually implemented)
