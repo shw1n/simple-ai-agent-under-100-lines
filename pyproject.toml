@@ -1,0 +1,18 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "your-project-name"
+version = "0.1.0"
+description = "Your project description"
+requires-python = ">=3.8"
+dependencies = [
+    "anthropic",
+    "python-dotenv",
+]
+
+[tool.pytest.ini_options]
+pythonpath = [
+    "."
+] 
